@@ -70,6 +70,11 @@ const experience = [
     }
 ];
 
+// Cloudinary configuration
+const CLOUDINARY_UPLOAD_PRESET = 'portfolio_uploads';
+const CLOUDINARY_CLOUD_NAME = 'your-cloud-name';
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
     renderBio();
@@ -158,83 +163,61 @@ function initializeFancybox() {
     });
 }
 
-// Handle file upload
-function setupFileUpload() {
-    const uploadForm = document.getElementById('uploadForm');
-    const fileInput = document.getElementById('fileInput');
+// File upload handling
+async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
-    uploadForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(uploadForm);
-        const submitButton = uploadForm.querySelector('button');
-
-        try {
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Uploading...';
-
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                showNotification('success', 'Files uploaded successfully!');
-                loadGallery();
-                uploadForm.reset();
-            } else {
-                throw new Error('Upload failed');
-            }
-        } catch (error) {
-            showNotification('error', 'Error uploading files: ' + error.message);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Upload';
-        }
-    });
-
-    // Load initial gallery
-    loadGallery();
+    try {
+        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        return data.secure_url;
+    } catch (error) {
+        console.error('Upload error:', error);
+        throw error;
+    }
 }
 
-// Load gallery items
-async function loadGallery() {
+// Update file upload handler
+async function handleFileUpload(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('fileInput');
+    const files = fileInput.files;
     const gallery = document.getElementById('mediaGallery');
+    
     try {
-        const response = await fetch('/files');
-        const files = await response.json();
-        
-        gallery.innerHTML = '';
-        
-        files.forEach(file => {
+        for (const file of files) {
+            const uploadButton = event.submitter;
+            uploadButton.disabled = true;
+            uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Uploading...';
+
+            const fileUrl = await uploadToCloudinary(file);
+            
+            // Create gallery item
             const item = document.createElement('div');
             item.className = 'gallery-item';
             
-            if (file.type.match(/\.(mp4|webm|mov)$/i)) {
+            if (file.type.startsWith('image/')) {
                 item.innerHTML = `
-                    <a href="${file.url}" data-fancybox="gallery" data-type="video">
-                        <video>
-                            <source src="${file.url}" type="video/${file.type.substring(1)}">
-                            Your browser does not support the video tag.
-                        </video>
-                        <div class="gallery-item-overlay">
-                            <span>${file.name}</span>
-                        </div>
+                    <a href="${fileUrl}" data-fancybox="gallery">
+                        <img src="${fileUrl}" alt="Gallery image">
                     </a>
                 `;
-            } else if (file.type === '.pdf') {
+            } else if (file.type.startsWith('video/')) {
                 item.innerHTML = `
-                    <a href="${file.url}" data-fancybox="gallery" data-type="pdf">
+                    <a href="${fileUrl}" data-fancybox="gallery">
+                        <video src="${fileUrl}" controls></video>
+                    </a>
+                `;
+            } else if (file.type === 'application/pdf') {
+                item.innerHTML = `
+                    <a href="${fileUrl}" data-fancybox="gallery" data-type="pdf">
                         <div class="pdf-preview">
-                            <i class="bi bi-file-pdf fs-1"></i>
-                            <span class="mt-2">${file.name}</span>
-                        </div>
-                    </a>
-                `;
-            } else {
-                item.innerHTML = `
-                    <a href="${file.url}" data-fancybox="gallery">
-                        <img src="${file.url}" alt="${file.name}" loading="lazy">
-                        <div class="gallery-item-overlay">
+                            <i class="fas fa-file-pdf"></i>
                             <span>${file.name}</span>
                         </div>
                     </a>
@@ -242,10 +225,23 @@ async function loadGallery() {
             }
             
             gallery.appendChild(item);
-        });
+            
+            // Reset button
+            uploadButton.disabled = false;
+            uploadButton.textContent = 'Upload';
+        }
+        
+        showNotification('success', 'Files uploaded successfully!');
+        fileInput.value = '';
     } catch (error) {
-        showNotification('error', 'Error loading gallery: ' + error.message);
+        showNotification('error', 'Error uploading files: ' + error.message);
     }
+}
+
+// Setup file upload
+function setupFileUpload() {
+    const uploadForm = document.getElementById('uploadForm');
+    uploadForm.addEventListener('submit', handleFileUpload);
 }
 
 // Setup contact form
