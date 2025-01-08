@@ -1,7 +1,11 @@
+/* Root variables */
 :root {
     --primary-color: #4361ee;
     --secondary-color: #3f37c9;
     --accent-color: #4cc9f0;
+    --text-color: #2b2d42;
+    --light-bg: #f8f9fa;
+    --dark-bg: #212529;
     --success-color: #4CAF50;
     --danger-color: #f72585;
     --warning-color: #ffd60a;
@@ -11,8 +15,10 @@
     --gradient-end: #4cc9f0;
 }
 
+/* Base styles */
 body {
     font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
@@ -33,6 +39,7 @@ body {
 .navbar-brand {
     font-weight: 600;
     font-size: 1.5rem;
+    color: white !important;
 }
 
 .nav-link {
@@ -41,11 +48,13 @@ body {
     margin: 0 0.2rem;
     border-radius: 5px;
     transition: all 0.3s ease;
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .nav-link:hover {
     background: rgba(255,255,255,0.1);
     transform: translateY(-2px);
+    color: white !important;
 }
 
 /* Breadcrumbs */
@@ -559,4 +568,29 @@ body {
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    color: white;
+    z-index: 1000;
+    animation: slideIn 0.3s ease forwards;
+}
+
+.notification.success {
+    background: #28a745;
+}
+
+.notification.error {
+    background: #dc3545;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
 }
