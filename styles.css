@@ -1,11 +1,13 @@
 /* Variables */
 :root {
-    --primary-color: #4361ee;
-    --secondary-color: #3f37c9;
-    --dark-color: #2b2d42;
-    --light-color: #f8f9fa;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --primary-color: #2563eb;
+    --secondary-color: #1d4ed8;
+    --accent-color: #06b6d4;
+    --dark-color: #0f172a;
+    --light-color: #f8fafc;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 /* Base Styles */
@@ -17,9 +19,15 @@ body {
 
 /* Navigation */
 .navbar {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
     padding: 1rem 0;
     transition: var(--transition);
+}
+
+.navbar.scrolled {
+    padding: 0.5rem 0;
+    background: rgba(15, 23, 42, 0.95);
 }
 
 .navbar-brand {
@@ -28,9 +36,26 @@ body {
 }
 
 .nav-link {
+    position: relative;
     font-weight: 500;
     padding: 0.5rem 1rem !important;
     transition: var(--transition);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: var(--accent-color);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 80%;
 }
 
 /* Sidebar Contact Form */
@@ -40,11 +65,12 @@ body {
     right: 0;
     width: 400px;
     height: 100vh;
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
     z-index: 1000;
     transform: translateX(100%);
     transition: var(--transition);
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
 }
 
 .sidebar.active {
@@ -108,28 +134,43 @@ body {
     overflow: hidden;
     box-shadow: var(--shadow);
     opacity: 0;
-    transform: translateY(50px);
+    transform: translateY(30px);
+    transition: var(--transition);
+    position: relative;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
     transition: var(--transition);
 }
 
-.project-card.show {
+.project-card:hover::before {
     opacity: 1;
-    transform: translateY(0);
 }
 
-.project-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+.project-card .card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    color: white;
+    transform: translateY(100%);
+    transition: var(--transition);
+}
+
+.project-card:hover .card-content {
+    transform: translateY(0);
 }
 
 .project-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-}
-
-.project-card .card-body {
-    padding: 1.5rem;
 }
 
 /* Skills Grid */
@@ -145,18 +186,35 @@ body {
     padding: 2rem;
     box-shadow: var(--shadow);
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95) translateY(20px);
     transition: var(--transition);
 }
 
 .skill-card.show {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateY(0);
 }
 
 .skill-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02) translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.skill-progress {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.skill-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Experience Timeline */
@@ -173,9 +231,8 @@ body {
     margin-left: 3rem;
     box-shadow: var(--shadow);
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateX(-30px);
     transition: var(--transition);
-    position: relative;
 }
 
 .timeline-item.show {
@@ -190,19 +247,15 @@ body {
     top: 50%;
     width: 1rem;
     height: 1rem;
-    background: var(--primary-color);
+    background: var(--accent-color);
     border-radius: 50%;
     transform: translateY(-50%);
+    transition: var(--transition);
 }
 
-.timeline-item::after {
-    content: '';
-    position: absolute;
-    left: -2.5rem;
-    top: 0;
-    width: 2px;
-    height: 100%;
-    background: var(--primary-color);
+.timeline-item:hover::before {
+    transform: translateY(-50%) scale(1.5);
+    box-shadow: 0 0 20px var(--accent-color);
 }
 
 /* Hero Section */
@@ -230,6 +283,44 @@ body {
 
 .social-links a:hover {
     color: var(--primary-color);
+}
+
+/* Custom Cursor */
+.cursor {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: transform 0.2s;
+}
+
+.cursor::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+}
+
+.cursor-hover {
+    transform: scale(2);
+    mix-blend-mode: normal;
+    background: rgba(6, 182, 212, 0.1);
+}
+
+.cursor-hover::after {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
 }
 
 /* Responsive Design */
@@ -275,6 +366,36 @@ body {
     }
 }
 
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .fade-in-up {
-    animation: fadeInUp 0.5s ease forwards;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.scale-in {
+    animation: scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }

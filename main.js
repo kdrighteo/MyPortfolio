@@ -514,61 +514,161 @@ function initializeAnimations() {
     document.querySelectorAll('.timeline-item').forEach(item => timelineObserver.observe(item));
 }
 
-// Render projects section
-function renderProjects() {
-    const projectsSection = document.querySelector('#projectsList');
-    if (projectsSection) {
-        projectsSection.innerHTML = portfolioData.projects.map(project => `
-            <div class="project-card">
-                <img src="${project.image}" class="card-img-top" alt="${project.title}">
-                <div class="card-body">
-                    <h3 class="card-title h5">${project.title}</h3>
-                    <p class="card-text">${project.description}</p>
-                    <div class="mb-3">
-                        ${project.technologies.map(tech => `
-                            <span class="badge bg-primary me-1">${tech}</span>
-                        `).join('')}
-                    </div>
-                    <a href="${project.link}" class="btn btn-primary" target="_blank">View Project</a>
-                </div>
-            </div>
-        `).join('');
+// DOM Elements
+const navbar = document.querySelector('.navbar');
+const sidebar = document.querySelector('.sidebar');
+const contactTriggers = document.querySelectorAll('.contact-trigger');
+const closeButton = document.querySelector('.close-sidebar');
+const skillCards = document.querySelectorAll('.skill-card');
+const projectCards = document.querySelectorAll('.project-card');
+const timelineItems = document.querySelectorAll('.timeline-item');
+
+// Navbar Scroll Effect
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    // Add/remove scrolled class for styling
+    if (currentScroll > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
     }
+    
+    // Hide/show navbar on scroll
+    if (currentScroll > lastScroll && currentScroll > 500) {
+        navbar.style.transform = 'translateY(-100%)';
+    } else {
+        navbar.style.transform = 'translateY(0)';
+    }
+    lastScroll = currentScroll;
+});
+
+// Sidebar Contact Form
+function toggleSidebar() {
+    sidebar.classList.toggle('active');
+    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
 }
 
-// Render skills section
-function renderSkills() {
-    const skillsSection = document.querySelector('#skillsList');
-    if (skillsSection) {
-        skillsSection.innerHTML = portfolioData.skills.map(skillGroup => `
-            <div class="skill-card">
-                <h3 class="h5 mb-3">${skillGroup.name}</h3>
-                <ul class="list-unstyled">
-                    ${skillGroup.items.map(skill => `
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-primary me-2"></i>
-                            ${skill}
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-        `).join('');
+contactTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleSidebar();
+    });
+});
+
+closeButton.addEventListener('click', toggleSidebar);
+
+document.addEventListener('click', (e) => {
+    if (sidebar.classList.contains('active') && 
+        !sidebar.contains(e.target) && 
+        !Array.from(contactTriggers).some(trigger => trigger.contains(e.target))) {
+        toggleSidebar();
     }
+});
+
+// Intersection Observer for Animations
+const observerOptions = {
+    root: null,
+    threshold: 0.1,
+    rootMargin: '0px'
+};
+
+// Skill Cards Observer
+const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            
+            // Animate skill progress bar
+            const progressBar = entry.target.querySelector('.skill-progress-bar');
+            if (progressBar) {
+                const progress = progressBar.getAttribute('data-progress');
+                progressBar.style.transform = `scaleX(${progress / 100})`;
+            }
+        }
+    });
+}, observerOptions);
+
+skillCards.forEach(card => skillObserver.observe(card));
+
+// Project Cards Observer
+const projectObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            // Add staggered delay for each card
+            setTimeout(() => {
+                entry.target.classList.add('show');
+            }, index * 100);
+        }
+    });
+}, observerOptions);
+
+projectCards.forEach(card => projectObserver.observe(card));
+
+// Timeline Items Observer
+const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.classList.add('show');
+            }, index * 200);
+        }
+    });
+}, observerOptions);
+
+timelineItems.forEach(item => timelineObserver.observe(item));
+
+// Smooth Scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            const headerOffset = 100;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// Cursor Effect
+const cursor = document.createElement('div');
+cursor.classList.add('cursor');
+document.body.appendChild(cursor);
+
+let mouseX = 0;
+let mouseY = 0;
+let cursorX = 0;
+let cursorY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// Smooth cursor animation
+function animateCursor() {
+    const dx = mouseX - cursorX;
+    const dy = mouseY - cursorY;
+    
+    cursorX += dx * 0.1;
+    cursorY += dy * 0.1;
+    
+    cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+    requestAnimationFrame(animateCursor);
 }
 
-// Render experience section
-function renderExperience() {
-    const experienceSection = document.querySelector('#experienceList');
-    if (experienceSection) {
-        experienceSection.innerHTML = experience.map(exp => `
-            <div class="timeline-item">
-                <div class="d-flex justify-content-between mb-2">
-                    <h3 class="h5">${exp.role}</h3>
-                    <span class="text-muted">${exp.period}</span>
-                </div>
-                <h4 class="h6 mb-2">${exp.company}</h4>
-                <p class="mb-0">${exp.description}</p>
-            </div>
-        `).join('');
-    }
-}
+animateCursor();
+
+// Add hover effect to interactive elements
+const interactiveElements = document.querySelectorAll('a, button, .project-card, .skill-card');
+interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+});
