@@ -5,11 +5,12 @@ A modern, responsive portfolio website built with HTML, CSS, and JavaScript. Hos
 ## Features
 
 - Responsive design
-- Project showcase
+- Project showcase with admin dashboard
 - Media gallery with Cloudinary integration
 - Contact form powered by Formspree
 - Smooth scrolling and animations
 - Modern UI with Bootstrap 5
+- Secure admin panel for project management
 
 ## Setup
 
@@ -18,45 +19,59 @@ A modern, responsive portfolio website built with HTML, CSS, and JavaScript. Hos
 3. Sign up for [Cloudinary](https://cloudinary.com/) (free tier)
 4. Sign up for [Formspree](https://formspree.io/) (free tier)
 5. Update the following in your code:
-   - In `main.js`: Replace `your-cloud-name` with your Cloudinary cloud name
+   - In `admin.js`: Replace Cloudinary configuration with your credentials
    - In `index.html`: Replace `your-formspree-id` with your Formspree form ID
+
+## Admin Dashboard
+
+1. Access the admin panel at `/admin.html`
+2. Default credentials:
+   - Username: `admin`
+   - Password: `admin123`
+3. Features:
+   - Add/Edit/Delete projects
+   - Upload project images
+   - View statistics
+   - Manage project details
 
 ## Customization
 
-1. Update the content in `main.js`:
-   - Bio information
-   - Project details
-   - Skills
-   - Experience
+1. Update content in files:
+   - `index.html`: Main content and structure
+   - `main.js`: Dynamic content and interactions
+   - `admin.js`: Admin panel functionality
+   - `styles.css` & `admin.css`: Visual styling
 
-2. Modify styles in `styles.css`:
-   - Colors
-   - Fonts
-   - Layout
-   - Animations
+2. Customize styles:
+   - Colors and themes
+   - Layout and spacing
+   - Animations and transitions
+   - Responsive breakpoints
 
 ## Local Development
 
 1. Clone the repository
 2. Open `index.html` in your browser
-3. Make changes to HTML, CSS, or JavaScript files
+3. Make changes to files
 4. Refresh browser to see changes
-
-## Deployment
-
-The website is automatically deployed to GitHub Pages when you push to the `gh-pages` branch.
 
 ## Technologies Used
 
 - HTML5
 - CSS3
-- JavaScript
+- JavaScript (ES6+)
 - Bootstrap 5
 - Font Awesome
 - Cloudinary
 - Formspree
-- GitHub Pages
+
+## Security
+
+- Secure admin authentication
+- Input validation and sanitization
+- Protected admin routes
+- Safe file uploads with Cloudinary
 
 ## License
 
-MIT License
+MIT License - feel free to use this template for your own portfolio!
