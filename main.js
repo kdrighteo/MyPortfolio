@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNavigation();
     renderBio();
     renderSkills();
-    renderProjects();
+    loadProjects();
     setupContactForm();
     setupFileUpload();
     initializeAnimations();
@@ -189,33 +189,49 @@ function renderSkills() {
     });
 }
 
-// Render projects section
-function renderProjects() {
-    const projectsList = document.getElementById('projectsList');
-    projects.forEach(project => {
-        const projectElement = document.createElement('div');
-        projectElement.className = 'col-md-4 mb-4';
-        projectElement.innerHTML = `
-            <div class="project-card">
-                <img src="${project.image}" class="img-fluid mb-3" alt="${project.title}">
+// Load and render projects from admin dashboard
+function loadProjects() {
+    const projectsContainer = document.querySelector('.projects-grid');
+    if (!projectsContainer) return;
+
+    const projects = JSON.parse(localStorage.getItem('projects') || '[]');
+    
+    projectsContainer.innerHTML = projects.map(project => `
+        <div class="project-card">
+            <img src="${project.image}" alt="${project.title}">
+            <div class="card-content">
                 <h3>${project.title}</h3>
                 <p>${project.description}</p>
-                <div class="technologies mb-3">
-                    ${project.technologies.map(tech => `<span class="badge bg-primary me-1">${tech}</span>`).join('')}
+                <div class="technologies">
+                    ${project.technologies.map(tech => `<span class="badge bg-primary">${tech}</span>`).join(' ')}
                 </div>
-                <div class="project-links">
-                    <a href="${project.liveUrl}" target="_blank" class="btn btn-primary btn-sm me-2">
-                        <i class="bi bi-globe"></i> Live Demo
-                    </a>
-                    <a href="${project.githubUrl}" target="_blank" class="btn btn-secondary btn-sm">
-                        <i class="bi bi-github"></i> Source Code
-                    </a>
-                </div>
+                ${project.link ? `<a href="${project.link}" class="btn btn-light mt-3" target="_blank">View Project</a>` : ''}
             </div>
-        `;
-        projectsList.appendChild(projectElement);
-    });
+        </div>
+    `).join('');
+
+    // Observe new project cards
+    document.querySelectorAll('.project-card').forEach(card => projectObserver.observe(card));
+
+    // Increment view counter
+    const views = parseInt(localStorage.getItem('totalViews') || '0');
+    localStorage.setItem('totalViews', views + 1);
 }
+
+// Projects Grid Observer
+const projectObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.classList.add('show');
+            }, index * 100);
+        }
+    });
+}, {
+    root: null,
+    threshold: 0.1,
+    rootMargin: '0px'
+});
 
 // Render experience section
 function renderExperience() {
