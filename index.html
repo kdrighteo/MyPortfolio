@@ -56,125 +56,150 @@
     </div>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <!-- Hero Section -->
-        <section id="home" class="hero-section">
-            <div class="container">
-                <h1>Welcome to My Portfolio</h1>
-                <p>Full-Stack Developer & UI/UX Designer</p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-light">
-                        <span>View Projects</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="#contact" class="btn btn-outline-light">
-                        <span>Hire Me</span>
-                        <i class="fas fa-paper-plane"></i>
-                    </a>
-                </div>
+    <div class="content-wrapper">
+        <!-- Sidebar with Contact Form -->
+        <div class="sidebar">
+            <div class="contact-form-wrapper">
+                <h3>Get In Touch</h3>
+                <form id="contactForm" action="https://formspree.io/f/your_form_id" method="POST">
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <textarea class="form-control" name="message" rows="4" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                </form>
             </div>
-        </section>
+        </div>
 
-        <section id="about" class="section">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="about-content">
-                            <h2 class="mb-4">About Me</h2>
-                            <div class="bio-text" id="bioContent"></div>
-                            <div class="hire-info mt-4">
-                                <h3>Hiring Information</h3>
-                                <ul class="list-unstyled">
-                                    <li><i class="bi bi-check-circle"></i> Available for Full-time Positions</li>
-                                    <li><i class="bi bi-check-circle"></i> Open to Remote Work</li>
-                                    <li><i class="bi bi-check-circle"></i> Freelance Projects Welcome</li>
-                                </ul>
-                            </div>
-                            <div class="social-links mt-4">
-                                <a href="#" class="social-link"><i class="bi bi-github"></i></a>
-                                <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
-                                <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Hero Section -->
+            <section id="home" class="hero-section">
+                <div class="container">
+                    <h1>Welcome to My Portfolio</h1>
+                    <p>Full-Stack Developer & UI/UX Designer</p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-light">
+                            <span>View Projects</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-outline-light">
+                            <span>Hire Me</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="section">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="about-content">
+                                <h2 class="mb-4">About Me</h2>
+                                <div class="bio-text" id="bioContent"></div>
+                                <div class="hire-info mt-4">
+                                    <h3>Hiring Information</h3>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle"></i> Available for Full-time Positions</li>
+                                        <li><i class="bi bi-check-circle"></i> Open to Remote Work</li>
+                                        <li><i class="bi bi-check-circle"></i> Freelance Projects Welcome</li>
+                                    </ul>
+                                </div>
+                                <div class="social-links mt-4">
+                                    <a href="#" class="social-link"><i class="bi bi-github"></i></a>
+                                    <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                                    <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="about-image">
-                            <img src="https://via.placeholder.com/500x500" alt="Profile" class="img-fluid rounded-circle">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" class="section bg-light">
-            <div class="container">
-                <h2 class="text-center mb-5">My Projects</h2>
-                <div class="row" id="projectsList"></div>
-            </div>
-        </section>
-
-        <section id="skills" class="section">
-            <div class="container">
-                <h2 class="text-center mb-5">Skills</h2>
-                <div class="row" id="skillsList"></div>
-            </div>
-        </section>
-
-        <section id="experience" class="section bg-light">
-            <div class="container">
-                <h2 class="text-center mb-5">Work Experience</h2>
-                <div class="timeline" id="experienceList"></div>
-            </div>
-        </section>
-
-        <section id="gallery" class="section">
-            <div class="container">
-                <h2 class="text-center mb-5">Project Gallery</h2>
-                <div class="row justify-content-center mb-4">
-                    <div class="col-md-6">
-                        <form id="uploadForm" class="text-center">
-                            <div class="mb-3">
-                                <input type="file" class="form-control" id="fileInput" name="files" multiple required>
-                                <small class="text-muted">Supported formats: Images, Videos, PDFs</small>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Upload</button>
-                        </form>
-                    </div>
-                </div>
-                <div class="gallery" id="mediaGallery"></div>
-            </div>
-        </section>
-
-        <section id="contact" class="section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Get in Touch</h2>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-body">
-                                <form id="contactForm" action="https://formspree.io/f/your-formspree-id" method="POST">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="message" class="form-label">Message</label>
-                                        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Send Message</button>
-                                </form>
+                        <div class="col-md-6">
+                            <div class="about-image">
+                                <img src="https://via.placeholder.com/500x500" alt="Profile" class="img-fluid rounded-circle">
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="section">
+                <div class="container">
+                    <h2 class="section-title">Projects</h2>
+                    <div class="projects-grid" id="projectsList"></div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="section">
+                <div class="container">
+                    <h2 class="section-title">Skills</h2>
+                    <div class="skills-grid" id="skillsList"></div>
+                </div>
+            </section>
+
+            <!-- Experience Section -->
+            <section id="experience" class="section">
+                <div class="container">
+                    <h2 class="section-title">Work Experience</h2>
+                    <div class="experience-timeline" id="experienceList"></div>
+                </div>
+            </section>
+
+            <section id="gallery" class="section">
+                <div class="container">
+                    <h2 class="text-center mb-5">Project Gallery</h2>
+                    <div class="row justify-content-center mb-4">
+                        <div class="col-md-6">
+                            <form id="uploadForm" class="text-center">
+                                <div class="mb-3">
+                                    <input type="file" class="form-control" id="fileInput" name="files" multiple required>
+                                    <small class="text-muted">Supported formats: Images, Videos, PDFs</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="gallery" id="mediaGallery"></div>
+                </div>
+            </section>
+
+            <section id="contact" class="section">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Get in Touch</h2>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="contactForm" action="https://formspree.io/f/your-formspree-id" method="POST">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="message" class="form-label">Message</label>
+                                            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Send Message</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <!-- Footer -->

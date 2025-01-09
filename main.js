@@ -435,17 +435,140 @@ function showNotification(type, message) {
 
 // Initialize animations
 function initializeAnimations() {
-    // Animate elements on scroll
-    const animateOnScroll = new IntersectionObserver((entries) => {
+    // Show sidebar on contact button click
+    const contactButtons = document.querySelectorAll('a[href="#contact"]');
+    const sidebar = document.querySelector('.sidebar');
+    
+    contactButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebar.classList.toggle('show');
+        });
+    });
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', (e) => {
+        if (sidebar && sidebar.classList.contains('show') && 
+            !sidebar.contains(e.target) && 
+            !e.target.closest('a[href="#contact"]')) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    // Intersection Observer for sections
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    // Observer for section titles
+    const titleObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fade-in');
-                animateOnScroll.unobserve(entry.target);
+                entry.target.classList.add('show');
+                titleObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1 });
+    }, observerOptions);
 
-    document.querySelectorAll('.card, .section-title, .skill-item').forEach(element => {
-        animateOnScroll.observe(element);
-    });
+    // Observer for project cards
+    const projectObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('show');
+                }, index * 100); // Stagger the animation
+                projectObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observer for skill cards
+    const skillObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('show');
+                }, index * 100);
+                skillObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observer for timeline items
+    const timelineObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('show');
+                }, index * 200);
+                timelineObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements
+    document.querySelectorAll('.section-title').forEach(title => titleObserver.observe(title));
+    document.querySelectorAll('.project-card').forEach(card => projectObserver.observe(card));
+    document.querySelectorAll('.skill-card').forEach(card => skillObserver.observe(card));
+    document.querySelectorAll('.timeline-item').forEach(item => timelineObserver.observe(item));
+}
+
+// Render projects section
+function renderProjects() {
+    const projectsSection = document.querySelector('#projectsList');
+    if (projectsSection) {
+        projectsSection.innerHTML = portfolioData.projects.map(project => `
+            <div class="project-card">
+                <img src="${project.image}" class="card-img-top" alt="${project.title}">
+                <div class="card-body">
+                    <h3 class="card-title h5">${project.title}</h3>
+                    <p class="card-text">${project.description}</p>
+                    <div class="mb-3">
+                        ${project.technologies.map(tech => `
+                            <span class="badge bg-primary me-1">${tech}</span>
+                        `).join('')}
+                    </div>
+                    <a href="${project.link}" class="btn btn-primary" target="_blank">View Project</a>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// Render skills section
+function renderSkills() {
+    const skillsSection = document.querySelector('#skillsList');
+    if (skillsSection) {
+        skillsSection.innerHTML = portfolioData.skills.map(skillGroup => `
+            <div class="skill-card">
+                <h3 class="h5 mb-3">${skillGroup.name}</h3>
+                <ul class="list-unstyled">
+                    ${skillGroup.items.map(skill => `
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-primary me-2"></i>
+                            ${skill}
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+}
+
+// Render experience section
+function renderExperience() {
+    const experienceSection = document.querySelector('#experienceList');
+    if (experienceSection) {
+        experienceSection.innerHTML = experience.map(exp => `
+            <div class="timeline-item">
+                <div class="d-flex justify-content-between mb-2">
+                    <h3 class="h5">${exp.role}</h3>
+                    <span class="text-muted">${exp.period}</span>
+                </div>
+                <h4 class="h6 mb-2">${exp.company}</h4>
+                <p class="mb-0">${exp.description}</p>
+            </div>
+        `).join('');
+    }
 }
