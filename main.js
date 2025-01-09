@@ -6,6 +6,44 @@ const bioContent = `
     complex problems and turning ideas into reality through clean, maintainable code.
 `;
 
+// Portfolio data
+const portfolioData = {
+    bio: {
+        name: "Your Name",
+        title: "Full-Stack Developer & UI/UX Designer",
+        description: "Passionate about creating beautiful, functional, and user-friendly applications. Experienced in both frontend and backend development.",
+    },
+    skills: [
+        { name: "Frontend", items: ["HTML5", "CSS3", "JavaScript", "React", "Vue.js", "Bootstrap"] },
+        { name: "Backend", items: ["Node.js", "Python", "Java", "MongoDB", "PostgreSQL", "REST APIs"] },
+        { name: "Tools", items: ["Git", "Docker", "AWS", "Figma", "Adobe XD", "VS Code"] },
+        { name: "Soft Skills", items: ["Problem Solving", "Team Leadership", "Communication", "Agile/Scrum"] }
+    ],
+    projects: [
+        {
+            title: "E-Commerce Platform",
+            description: "A full-stack e-commerce platform with payment integration and admin dashboard.",
+            technologies: ["React", "Node.js", "MongoDB", "Stripe"],
+            image: "https://placehold.co/600x400",
+            link: "#"
+        },
+        {
+            title: "Task Management App",
+            description: "A collaborative task management application with real-time updates.",
+            technologies: ["Vue.js", "Firebase", "Tailwind CSS"],
+            image: "https://placehold.co/600x400",
+            link: "#"
+        },
+        {
+            title: "AI Image Generator",
+            description: "An AI-powered image generation tool using deep learning models.",
+            technologies: ["Python", "TensorFlow", "Flask", "React"],
+            image: "https://placehold.co/600x400",
+            link: "#"
+        }
+    ]
+};
+
 // Sample data
 const projects = [
     {
@@ -77,24 +115,81 @@ const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOU
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
+    initializeNavigation();
     renderBio();
-    renderProjects();
     renderSkills();
-    renderExperience();
-    setupFileUpload();
+    renderProjects();
     setupContactForm();
-    setupAdminLogin();
-    initializeFancybox();
-    updateBreadcrumbs();
+    setupFileUpload();
+    initializeAnimations();
+    renderPortfolioBio();
+    renderPortfolioSkills();
+    renderPortfolioProjects();
 });
 
-// Render biography
+// Navigation
+function initializeNavigation() {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Update active navigation item on scroll
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (window.pageYOffset >= sectionTop - 60) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').substring(1) === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+}
+
+// Render bio section
 function renderBio() {
     const bioElement = document.getElementById('bioContent');
     bioElement.textContent = bioContent;
 }
 
-// Render projects
+// Render skills section
+function renderSkills() {
+    const skillsList = document.getElementById('skillsList');
+    skills.forEach(skillGroup => {
+        const skillElement = document.createElement('div');
+        skillElement.className = 'col-md-4 mb-4';
+        skillElement.innerHTML = `
+            <div class="skill-item">
+                <h3>${skillGroup.name}</h3>
+                <ul class="list-unstyled">
+                    ${skillGroup.items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+        skillsList.appendChild(skillElement);
+    });
+}
+
+// Render projects section
 function renderProjects() {
     const projectsList = document.getElementById('projectsList');
     projects.forEach(project => {
@@ -122,25 +217,7 @@ function renderProjects() {
     });
 }
 
-// Render skills
-function renderSkills() {
-    const skillsList = document.getElementById('skillsList');
-    skills.forEach(skillGroup => {
-        const skillElement = document.createElement('div');
-        skillElement.className = 'col-md-4 mb-4';
-        skillElement.innerHTML = `
-            <div class="skill-item">
-                <h3>${skillGroup.name}</h3>
-                <ul class="list-unstyled">
-                    ${skillGroup.items.map(item => `<li>${item}</li>`).join('')}
-                </ul>
-            </div>
-        `;
-        skillsList.appendChild(skillElement);
-    });
-}
-
-// Render experience
+// Render experience section
 function renderExperience() {
     const experienceList = document.getElementById('experienceList');
     experience.forEach(exp => {
@@ -156,364 +233,219 @@ function renderExperience() {
     });
 }
 
-// Initialize Fancybox
-function initializeFancybox() {
-    Fancybox.bind('[data-fancybox]', {
-        // Custom options
-    });
+// Render portfolio bio section
+function renderPortfolioBio() {
+    const bioSection = document.querySelector('#home');
+    if (bioSection) {
+        const bioContent = `
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="display-4 fw-bold">${portfolioData.bio.name}</h1>
+                        <h2 class="h3 mb-4">${portfolioData.bio.title}</h2>
+                        <p class="lead">${portfolioData.bio.description}</p>
+                        <div class="d-flex gap-3">
+                            <a href="#projects" class="btn btn-primary">View Projects</a>
+                            <a href="#contact" class="btn btn-outline-primary">Contact Me</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <img src="https://placehold.co/600x400" alt="Profile" class="img-fluid rounded-3 shadow">
+                    </div>
+                </div>
+            </div>
+        `;
+        bioSection.innerHTML = bioContent;
+    }
 }
 
-// File upload handling
-async function uploadToCloudinary(file) {
+// Render portfolio skills section
+function renderPortfolioSkills() {
+    const skillsSection = document.querySelector('#skills .row');
+    if (skillsSection) {
+        skillsSection.innerHTML = portfolioData.skills.map(skillGroup => `
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title h5 mb-3">${skillGroup.name}</h3>
+                        <ul class="list-unstyled">
+                            ${skillGroup.items.map(skill => `
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                    ${skill}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// Render portfolio projects section
+function renderPortfolioProjects() {
+    const projectsSection = document.querySelector('#projects .row');
+    if (projectsSection) {
+        projectsSection.innerHTML = portfolioData.projects.map(project => `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <img src="${project.image}" class="card-img-top" alt="${project.title}">
+                    <div class="card-body">
+                        <h3 class="card-title h5">${project.title}</h3>
+                        <p class="card-text">${project.description}</p>
+                        <div class="mb-3">
+                            ${project.technologies.map(tech => `
+                                <span class="badge bg-primary me-1">${tech}</span>
+                            `).join('')}
+                        </div>
+                        <a href="${project.link}" class="btn btn-primary" target="_blank">View Project</a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// Contact form handling
+function setupContactForm() {
+    const form = document.querySelector('#contactForm');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    showNotification('success', 'Message sent successfully!');
+                    form.reset();
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                showNotification('error', 'Error sending message. Please try again.');
+            }
+        });
+    }
+}
+
+// File upload handling with Cloudinary
+async function handleFileUpload(file) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
     try {
-        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
             method: 'POST',
             body: formData
         });
+        
+        if (!response.ok) throw new Error('Upload failed');
+        
         const data = await response.json();
         return data.secure_url;
     } catch (error) {
-        console.error('Upload error:', error);
-        throw error;
-    }
-}
-
-// Update file upload handler
-async function handleFileUpload(event) {
-    event.preventDefault();
-    const fileInput = document.getElementById('fileInput');
-    const files = fileInput.files;
-    const gallery = document.getElementById('mediaGallery');
-    
-    try {
-        for (const file of files) {
-            const uploadButton = event.submitter;
-            uploadButton.disabled = true;
-            uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Uploading...';
-
-            const fileUrl = await uploadToCloudinary(file);
-            
-            // Create gallery item
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            
-            if (file.type.startsWith('image/')) {
-                item.innerHTML = `
-                    <a href="${fileUrl}" data-fancybox="gallery">
-                        <img src="${fileUrl}" alt="Gallery image">
-                    </a>
-                `;
-            } else if (file.type.startsWith('video/')) {
-                item.innerHTML = `
-                    <a href="${fileUrl}" data-fancybox="gallery">
-                        <video src="${fileUrl}" controls></video>
-                    </a>
-                `;
-            } else if (file.type === 'application/pdf') {
-                item.innerHTML = `
-                    <a href="${fileUrl}" data-fancybox="gallery" data-type="pdf">
-                        <div class="pdf-preview">
-                            <i class="fas fa-file-pdf"></i>
-                            <span>${file.name}</span>
-                        </div>
-                    </a>
-                `;
-            }
-            
-            gallery.appendChild(item);
-            
-            // Reset button
-            uploadButton.disabled = false;
-            uploadButton.textContent = 'Upload';
-        }
-        
-        showNotification('success', 'Files uploaded successfully!');
-        fileInput.value = '';
-    } catch (error) {
-        showNotification('error', 'Error uploading files: ' + error.message);
+        throw new Error('Upload failed: ' + error.message);
     }
 }
 
 // Setup file upload
 function setupFileUpload() {
-    const uploadForm = document.getElementById('uploadForm');
-    uploadForm.addEventListener('submit', handleFileUpload);
-}
-
-// Setup contact form
-function setupContactForm() {
-    const contactForm = document.getElementById('contactForm');
-    
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(contactForm);
-        const submitButton = contactForm.querySelector('button');
-        
-        try {
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
-
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Object.fromEntries(formData))
-            });
-
-            if (response.ok) {
-                showNotification('success', 'Message sent successfully!');
-                contactForm.reset();
-            } else {
-                throw new Error('Failed to send message');
+    const uploadForm = document.querySelector('#uploadForm');
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = uploadForm.querySelector('input[type="file"]');
+            const submitButton = uploadForm.querySelector('button[type="submit"]');
+            
+            if (fileInput.files.length === 0) {
+                showNotification('error', 'Please select a file to upload');
+                return;
             }
-        } catch (error) {
-            showNotification('error', 'Error sending message: ' + error.message);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Send Message';
-        }
-    });
-}
 
-// Setup admin login
-function setupAdminLogin() {
-    const adminLogin = document.getElementById('adminLogin');
-    const adminLoginForm = document.getElementById('adminLoginForm');
-    const adminModal = new bootstrap.Modal(document.getElementById('adminModal'));
-    const dashboardModal = new bootstrap.Modal(document.getElementById('dashboardModal'));
-    let currentModal = null;
-
-    adminLogin.addEventListener('click', () => {
-        currentModal = adminModal;
-        adminModal.show();
-    });
-
-    adminLoginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const submitButton = adminLoginForm.querySelector('button');
-        
-        try {
             submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Logging in...';
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Uploading...';
 
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                showNotification('success', 'Logged in successfully!');
-                if (currentModal) {
-                    currentModal.hide();
-                }
-                currentModal = dashboardModal;
-                adminLoginForm.reset();
-                loadAdminDashboard();
-                dashboardModal.show();
-            } else {
-                throw new Error(data.error || 'Invalid credentials');
+            try {
+                const fileUrl = await handleFileUpload(fileInput.files[0]);
+                showNotification('success', 'File uploaded successfully!');
+                addToGallery(fileUrl, fileInput.files[0].type);
+                uploadForm.reset();
+            } catch (error) {
+                showNotification('error', error.message);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Upload';
             }
-        } catch (error) {
-            showNotification('error', 'Login failed: ' + error.message);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Login';
-        }
-    });
-
-    // Handle modal closing
-    document.getElementById('adminModal').addEventListener('hidden.bs.modal', () => {
-        adminLoginForm.reset();
-        const submitButton = adminLoginForm.querySelector('button');
-        submitButton.disabled = false;
-        submitButton.textContent = 'Login';
-    });
-}
-
-// Load admin dashboard
-async function loadAdminDashboard() {
-    const messagesList = document.getElementById('messagesList');
-    const filesList = document.getElementById('filesList');
-
-    try {
-        // Load messages
-        const messagesResponse = await fetch('/api/admin/messages');
-        const messages = await messagesResponse.json();
-        
-        messagesList.innerHTML = messages.map(message => `
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">${message.name}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">${message.email}</h6>
-                    <p class="card-text">${message.message}</p>
-                    <small class="text-muted">${new Date(message.createdAt).toLocaleString()}</small>
-                </div>
-            </div>
-        `).join('');
-
-        // Load files
-        const filesResponse = await fetch('/files');
-        const files = await filesResponse.json();
-        
-        filesList.innerHTML = files.map(file => `
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>${file.name}</span>
-                <button class="btn btn-danger btn-sm" onclick="deleteFile('${file.name}')">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        `).join('');
-    } catch (error) {
-        showNotification('error', 'Error loading dashboard: ' + error.message);
-    }
-}
-
-// Delete file
-async function deleteFile(filename) {
-    try {
-        const response = await fetch(`/api/admin/files/${filename}`, {
-            method: 'DELETE'
         });
-
-        if (response.ok) {
-            showNotification('success', 'File deleted successfully!');
-            loadAdminDashboard();
-        } else {
-            throw new Error('Failed to delete file');
-        }
-    } catch (error) {
-        showNotification('error', 'Error deleting file: ' + error.message);
     }
 }
 
-// Show notification
+// Add item to gallery
+function addToGallery(url, fileType) {
+    const gallery = document.querySelector('#mediaGallery');
+    if (!gallery) return;
+
+    const item = document.createElement('div');
+    item.className = 'col-md-4 mb-4';
+
+    if (fileType.startsWith('image/')) {
+        item.innerHTML = `
+            <a href="${url}" data-fancybox="gallery">
+                <img src="${url}" alt="Gallery image" class="img-fluid rounded">
+            </a>
+        `;
+    } else if (fileType.startsWith('video/')) {
+        item.innerHTML = `
+            <video src="${url}" controls class="img-fluid rounded"></video>
+        `;
+    } else if (fileType === 'application/pdf') {
+        item.innerHTML = `
+            <div class="pdf-preview">
+                <i class="fas fa-file-pdf"></i>
+                <p>PDF Document</p>
+                <a href="${url}" class="btn btn-primary btn-sm" target="_blank">View PDF</a>
+            </div>
+        `;
+    }
+
+    gallery.appendChild(item);
+}
+
+// Notifications
 function showNotification(type, message) {
     const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} notification`;
+    notification.className = `notification ${type}`;
     notification.textContent = message;
-    
     document.body.appendChild(notification);
-    setTimeout(() => notification.classList.add('show'), 100);
-    
+
     setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
+        notification.remove();
     }, 3000);
 }
 
-// Smooth scroll function
-function smoothScroll(target, duration = 800) {
-    const targetElement = document.querySelector(target);
-    if (!targetElement) return;
-
-    const targetPosition = targetElement.offsetTop;
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    let startTime = null;
-
-    function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        
-        // Easing function
-        const ease = t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-        
-        window.scrollTo(0, startPosition + (distance * ease(progress)));
-        
-        if (timeElapsed < duration) {
-            requestAnimationFrame(animation);
-        }
-    }
-
-    requestAnimationFrame(animation);
-}
-
-// Update breadcrumbs based on scroll position
-function updateBreadcrumbs() {
-    const sections = document.querySelectorAll('section[id]');
-    const currentSection = document.getElementById('currentSection');
-    
-    function updateCurrentSection() {
-        let current = '';
-        const scrollPosition = window.scrollY + 100;
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
+// Initialize animations
+function initializeAnimations() {
+    // Animate elements on scroll
+    const animateOnScroll = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in');
+                animateOnScroll.unobserve(entry.target);
             }
         });
+    }, { threshold: 0.1 });
 
-        if (current) {
-            const sectionName = current.charAt(0).toUpperCase() + current.slice(1);
-            if (currentSection.textContent !== sectionName) {
-                currentSection.textContent = sectionName;
-                
-                // Animate the change
-                currentSection.style.transform = 'translateY(-10px)';
-                currentSection.style.opacity = '0';
-                setTimeout(() => {
-                    currentSection.style.transform = 'translateY(0)';
-                    currentSection.style.opacity = '1';
-                }, 50);
-            }
-        }
-    }
-
-    // Update on scroll with throttling
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                updateCurrentSection();
-                ticking = false;
-            });
-            ticking = true;
-        }
+    document.querySelectorAll('.card, .section-title, .skill-item').forEach(element => {
+        animateOnScroll.observe(element);
     });
-
-    // Initial update
-    updateCurrentSection();
 }
-
-// Initialize all components
-document.addEventListener('DOMContentLoaded', () => {
-    setupAdminLogin();
-    setupContactForm();
-    setupFileUpload();
-    updateBreadcrumbs();
-    renderBio();
-    renderProjects();
-    renderSkills();
-    renderExperience();
-    initializeFancybox();
-    
-    // Add smooth scrolling for all links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const href = this.getAttribute('href');
-            
-            if (href === '#') return;
-            
-            smoothScroll(href);
-            
-            // Update URL without jumping
-            window.history.pushState(null, null, href);
-        });
-    });
-});
